@@ -1,5 +1,13 @@
+import Navbar from "./components/Navbar";
+import Mainroutes from "./routes/Mainroutes";
+
 const App = () => {
-  return <div>App</div>;
+  return (
+    <>
+      <Navbar />
+      <Mainroutes />
+    </>
+  );
 };
 
 export default App;
