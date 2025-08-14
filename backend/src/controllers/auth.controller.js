@@ -31,4 +31,30 @@ async function registerController(req, res) {
   res.status(409).json({ message: "Try Again" });
 }
 
-module.exports = { registerController };
+async function loginController(req, res) {
+  const { email, password } = req.body;
+
+  const user = await userModel.findOne({
+    $or: [{ username: email }, { email: email }],
+  });
+
+  if (!user) {
+    return res.status(400).json({ message: "User not found" });
+  }
+
+  const isPasswordVaid = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordVaid) {
+    return res.status(400).json({
+      message: "Invalid Password",
+    });
+  }
+
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+
+  res.cookie("token", token);
+
+  res.status(201).json({ message: "Login successfull" });
+}
+
+module.exports = { registerController, loginController };
